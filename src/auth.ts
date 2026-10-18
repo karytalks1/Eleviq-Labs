@@ -12,6 +12,11 @@ if (process.env.AUTH_DISCORD_ID && process.env.AUTH_DISCORD_SECRET) {
     Discord({
       clientId: process.env.AUTH_DISCORD_ID,
       clientSecret: process.env.AUTH_DISCORD_SECRET,
+      // Discord turned on RFC 9207, so its OAuth callback now carries an iss
+      // parameter. @auth/core validates that against the provider issuer and
+      // falls back to its placeholder (https://authjs.dev) when none is set,
+      // which fails the comparison. Pin Discord's real issuer so the check passes.
+      issuer: "https://discord.com",
       checks: ["state"],
     })
   );
